@@ -1,0 +1,37 @@
+<Pageant>
+	<Contestants>
+		<Contestant id="Contestant-A" name="Alice" order="1"/>
+		<Contestant id="Contestant-B" name="Bob" order="2"/>
+	</Contestants>
+    <Categories>
+        <Category name="Swimsuit" order="1" weight="0.3">
+            <Criterion name="Fitness" weight="0.5"/>
+            <Criterion name="Presence" weight="0.5"/>
+        </Category>
+
+        <Category name="Evening Gown" order="2" weight="0.4">
+            <Criterion name="Elegance" weight="0.7"/>
+            <Criterion name="Walk" weight="0.3"/>
+        </Category>
+
+        <Category name="Interview" order="3" weight="0.3">
+            <Criterion name="Intelligence" weight="0.6"/>
+            <Criterion name="Articulation" weight="0.4"/>
+        </Category>
+    </Categories>
+
+	<Judges>
+		<Judge id="judge1">
+			<Username>judge1</Username>
+			<PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$jMxFnez1XsPhx8oPdhRcpg$PheoI/0OgNA6kj+jKLRgntmCpa0RUq2OlC0654/hosY</PasswordHash>
+		</Judge>
+		<Judge id="judge2">
+			<Username>judge2</Username>
+			<PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$jMxFnez1XsPhx8oPdhRcpg$PheoI/0OgNA6kj+jKLRgntmCpa0RUq2OlC0654/hosY</PasswordHash>
+		</Judge>
+	</Judges>
+	<Tabulator>
+		<Username>tabulator</Username>
+		<PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$3QB6E+3tzBMDcxebPexhqw$a5kOlQGPJpEfC5KXTcvsdik9iDGEsd2GyOqJta6Po0A</PasswordHash>
+	</Tabulator>
+</Pageant>
