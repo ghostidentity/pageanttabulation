@@ -1,86 +1,160 @@
-# Pageant Tabulation System
+# 🏆 Pageant Tabulation System
+A secure, real-time pageant scoring system with encrypted communication and reliable performance.
+
+### **Features**
+
+✅ **Weighted Scoring** – Scores for each category  
+✅ **Normalized Scores** – Standardized to 100  
+✅ **Real-Time Updates** – Live scores and rankings  
+✅ **PDF Reports** – Generate instantly  
+✅ **Encrypted Communication** – Secure and private
+
 **Developed by:** Mark Tagab
 
-This directory contains the executables and configuration files for the Pageant Tabulation System.
+A comprehensive tabulation system for pageant contests with server-client architecture.
 
-## Files
+---
 
-*   **Server**
-    *   `pageant-server` (Linux binary): The main server application.
-    *   `pageant.xml`: Configuration file for the contest, judges, and system users.
-    *   `nats-server` (Required): The NATS server binary. **Note:** The `pageant-server` will automatically try to start this if it's in the same directory. You do not need to run it manually.
+## 📁 Directory Structure
 
-*   **Client**
-    *   `client.exe` (Windows binary): Native Windows executable for the dashboard.
-    *   `config.xml`: Configuration file for the client (server connection details).
+### Server Components
+- **`pageant-server`** — Linux binary; main server application
+- **`pageant.xml`** — Contest configuration (rules, judges, users, categories)
+- **`nats-server`** — Required NATS messaging server
+  > ℹ️ Automatically started by `pageant-server` if in the same directory
 
-## Configuration (`pageant.xml`)
+### Client Components
+- **`client.exe`** — Native Windows dashboard application
+- **`config.xml`** — Client configuration (server connection details)
 
-The `pageant.xml` file defines the contest rules, categories, contestants, and users (judges and tabulators).
+## ⚙️ Configuration
 
-### Auto-Hashing Passwords
+### Automatic Password Hashing
 
-For security, passwords are stored as Argon2 hashes. However, you do **not** need to manually generate these hashes. This applies to both **Judges** and the **Tabulator**.
+Passwords are securely stored as **Argon2 hashes** with no manual hashing required.
 
-1.  Open `pageant.xml` in a text editor.
-2.  Enter the **plain text** password in the `<PasswordHash>` field for any user (Judge or Tabulator).
-    ```xml
-    <Judge id="1">
-        <Username>judge1</Username>
-        <PasswordHash>mySecretPassword123</PasswordHash>
-    </Judge>
-    <!-- Same for Tabulator -->
-    <Tabulator>
-        <Username>admin</Username>
-        <PasswordHash>adminPass</PasswordHash>
-    </Tabulator>
-    ```
-3.  Start the `pageant-server`.
-4.  The server will detect the plain text password, automatically hash it using Argon2, and **rewrite the `pageant.xml` file** with the secure hash.
-    ```xml
-    <!-- After server start -->
-    <Judge id="1">
-        <Username>judge1</Username>
-        <PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$...</PasswordHash>
-    </Judge>
-    ```
+**Before Starting the Server:**
 
-### Defining Categories and Criteria
+#### 1. Open `pageant.xml` in a text editor
+#### 2. Enter plain text passwords in `<PasswordHash>` fields:
+   ```xml
+   <Judge id="1">
+       <Username>judge1</Username>
+       <PasswordHash>mySecretPassword123</PasswordHash>
+   </Judge>
+   <Tabulator>
+       <Username>admin</Username>
+       <PasswordHash>adminPass</PasswordHash>
+   </Tabulator>
+   ```
+#### 3. Start `pageant-server`
 
-When adding a new `<Category>` in `pageant.xml`, please follow these rules:
+**After Server Startup:**
 
-1.  **Category Weights must sum to 1.0 (100%)**: The sum of **all** `<Category>` weights in the contest must equal exactly `1.0`.
-2.  **Criterion Weights must sum to 1.0 (100%)**: The sum of all `<Criterion>` weights inside a **single** category must equal exactly `1.0`.
-    *   Example: 40% = `0.4`, 60% = `0.6`.
-3.  **Format**:
-    ```xml
-    <Category name="Swimsuit" order="1" weight="1.0">
-        <Criterion name="Poise" weight="0.4" />
-        <Criterion name="Physical Fitness" weight="0.6" />
-    </Category>
-    ```
+The server automatically detects plain text passwords, hashes them using Argon2, and **rewrites the `pageant.xml` file**. Your file will now contain secure hashes:
 
-## Running the System
+```xml
+<Judge id="1">
+    <Username>judge1</Username>
+    <PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$...</PasswordHash>
+</Judge>
+<Tabulator>
+    <Username>admin</Username>
+    <PasswordHash>$argon2id$v=19$m=19456,t=2,p=1$...</PasswordHash>
+</Tabulator>
+```
 
-### 1. Start the Server (Linux)
-Ensure the server is running on the host machine (e.g., Raspberry Pi).
+### Category & Criteria Setup
+
+When adding categories to `pageant.xml`, follow these weight requirements:
+
+| Rule | Requirement |
+|------|-------------|
+| **Category Weights** | All `<Category>` weights must sum to `1.0` (100%) |
+| **Criterion Weights** | All `<Criterion>` weights within a category must sum to `1.0` (100%) |
+
+**Example:**
+```xml
+<Category name="Swimsuit" order="1" weight="1.0">
+    <Criterion name="Poise" weight="0.4" />
+    <Criterion name="Physical Fitness" weight="0.6" />
+</Category>
+```
+
+## 🚀 Getting Started
+
+### Step 1: Start the Server (Linux - Raspberry Pi 5 Recommended)
+
+The `pageant-server` binary is compiled for **ARM64 architecture**, making it ideal for Raspberry Pi 5 and other ARM-based Linux systems.
+
 ```bash
 ./pageant-server
 ```
 
-### 2. Configure the Client
-Edit `config.xml` to point to your NATS server address (usually the IP of the server).
+> 💡 **Why Raspberry Pi 5?** It provides native ARM64 support without emulation overhead, ensuring optimal performance for the tabulation service.
+
+### Step 2: Deploy with Docker (Optional)
+For cross-platform deployment without native compilation on non-ARM64 systems:
+
+**Required files:**
+- `pageant.xml` — Contest configuration
+- `result.xml` — Results file (can be empty)
+
+**Windows CMD**
+```bash
+docker run -d --name pageant_server -p 4222:4222 -v "%cd%\pageant.xml:/app/pageant.xml" -v "%cd%\result.xml:/app/result.xml" mtagab/pageant_server:latest
+```
+
+| Flag | Purpose |
+|------|---------|
+| `-d` | Run in detached (background) mode |
+| `--name` | Assign container name for easy management |
+| `-p 4222:4222` | Expose NATS messaging port |
+| `-v` | Mount configuration and results files |
+
+**Docker Management:**
+```bash
+# View logs
+docker logs -f pageant_server
+
+# Stop server
+docker stop pageant_server
+```
+
+> ℹ️ **Performance Note:** For best performance, run Docker on ARM64 hosts (like Raspberry Pi 5). On non-ARM64 systems, Docker uses QEMU emulation, which may impact performance.
+
+### Step 3: Access the Server
+- **Local access:** `localhost:4222`
+- **LAN access:** `<host_IP>:4222`
+  - Windows: Use `ipconfig` to find IP
+  - Linux: Use `ifconfig` or `ip addr` to find IP
+
+### Step 4: Configure the Client
+Edit `config.xml` with your server's IP address:
 ```xml
 <Config>
     <ServerIP>192.168.1.100</ServerIP>
 </Config>
 ```
 
-### 3. Run the Client
+### Step 5: Launch the Client
 **Windows:**
-Double-click `client.exe`.
+Double-click `client.exe`
 
-### 4. End of Contest (Results)
-When the Tabulator requests the final rankings from the dashboard, the server will automatically generate two result files in the directory where `pageant-server` is running:
-*   `result.xml`: The raw data of the final scores.
-*   `pageant_results.pdf`: A formatted PDF report suitable for printing.
+### Step 6: Generate Final Results
+When the Tabulator requests final rankings, the server automatically generates:
+- **`result.xml`** — Raw score data
+- **`pageant_results.pdf`** — Formatted printable report
+
+---
+
+## 📋 Quick Reference
+
+| Component | File | Platform | Purpose |
+|-----------|------|----------|---------|
+| Server | `pageant-server` | Linux | Tabulation & scoring service |
+| Config | `pageant.xml` | Any | Contest rules, judges & users |
+| Messaging | `nats-server` | Any | Event messaging broker |
+| Client | `client.exe` | Windows | Judge scoring & tabulator control |
+| Results | `result.xml` | Any | Final scoring data |
+| Report | `pageant_results.pdf` | Any | Formatted competition results |
