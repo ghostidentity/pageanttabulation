@@ -88,6 +88,8 @@ When adding categories to `pageant.xml`, follow these weight requirements:
 The `pageant-server` binary is compiled for **ARM64 architecture**, making it ideal for Raspberry Pi 5 and other ARM-based Linux systems.
 
 ```bash
+chmod +x nats-server
+chmod +x pageant-server
 ./pageant-server
 ```
 
