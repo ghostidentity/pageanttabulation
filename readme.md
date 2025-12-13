@@ -165,3 +165,8 @@ When the Tabulator requests final rankings, the server automatically generates:
 | Client | `client.exe` | Windows | Judge scoring & tabulator control |
 | Results | `result.xml` | Any | Final scoring data |
 | Report | `pageant_results.pdf` | Any | Formatted competition results |
+
+
+## Default credential
+- Tabulator =>  username: tabulator | password: default
+- Judge  =>  username: judge1 | password: pass1
