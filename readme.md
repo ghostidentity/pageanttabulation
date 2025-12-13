@@ -91,6 +91,11 @@ The `pageant-server` binary is compiled for **ARM64 architecture**, making it id
 ./pageant-server
 ```
 
+To check for server IP
+```bash
+hostname -I | awk '{print $1}'
+```
+
 > 💡 **Why Raspberry Pi 5?** It provides native ARM64 support without emulation overhead, ensuring optimal performance for the tabulation service.
 
 ### Step 2: Deploy with Docker (Optional)
